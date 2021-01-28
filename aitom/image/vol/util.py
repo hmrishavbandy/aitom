@@ -106,7 +106,10 @@ def resize_center_batch_dict(vs, cubic=True, enlarge_factor=None, size=None, cva
     of same size as the largest multiplied by a factor
     """
     if size is None:
+        print("www",vs.keys())
+        vs =  vs[list(vs.keys())[0]]
         siz = [N.array(vs[_].shape, dtype=int) for _ in vs]
+        #print(siz)
         siz = N.array(siz)
         if cubic:
             siz = siz.max()

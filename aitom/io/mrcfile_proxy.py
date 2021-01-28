@@ -19,7 +19,12 @@ def read(path):
 
 
 def read_data(path):
+    #print("Path",path)
+    import os.path as path1
+    print("Get",path1.exists(path))
+    
     mrc = mrcfile.open(path, mode='r+', permissive=True)
+    #print("Data?")
     a = mrc.data
     assert a.shape[0] > 0
     a = a.astype(np.float32)

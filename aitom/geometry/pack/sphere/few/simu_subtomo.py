@@ -13,7 +13,7 @@ sys.path.append("..")
 # set parameters for the simulation
 num = 1
 
-op = {'map': {'situs_pdb2vol_program': '/shared/opt/local/img/em/et/util/situs/Situs_2.7.2/bin/pdb2vol',
+op = {'map': {'situs_pdb2vol_program': './Situs_3.1/bin/pdb2vol',
               'spacing_s': [10.0], 'resolution_s': [10.0], 'pdb_dir': 'IOfile/pdbfile/',
               'out_file': '/IOfile/map_single/situs_maps.pickle', 'map_single_path': './IOfile/map_single'},
       # read density map from mrc
@@ -64,12 +64,12 @@ def simu_subtomo(op, packing_op, output, save_tomo=0, save_target=1, save_tomo_s
 
     the json file of packing result and target will be saved in '../IOfile/json'
     """
-    from .map_tomo import pdb2map as PM
-    from .map_tomo import iomap as IM
-    from .map_tomo import mrc2singlepic as MS
-    from .map_tomo import merge_map as MM
-    from .map_tomo import map2tomogram as MT
-    from .packing_single_sphere import simulate as SI
+    from map_tomo import pdb2map as PM
+    from map_tomo import iomap as IM
+    from map_tomo import mrc2singlepic as MS
+    from map_tomo import merge_map as MM
+    from map_tomo import map2tomogram as MT
+    from packing_single_sphere import simulate as SI
 
     # convert pdb to map
     # ms = PM.pdb2map(op['map'])
@@ -85,7 +85,9 @@ def simu_subtomo(op, packing_op, output, save_tomo=0, save_target=1, save_tomo_s
 
     # get packing info
     target_name = packing_op['target']
+    print("Name",target_name)
     packing_result = SI.packing_with_target(packing_op)
+    print("Print",packing_result.keys())
     protein_name = packing_result['optimal_result']['pdb_id']
     x = packing_result['optimal_result']['x'] / 10
     y = packing_result['optimal_result']['y'] / 10
@@ -98,8 +100,8 @@ def simu_subtomo(op, packing_op, output, save_tomo=0, save_target=1, save_tomo_s
     print('get packing info done')
 
     # merge map to hugemap, save random angle in packing_result
-    initmap, init_angle_list = MM.merge_map(v, protein_name, x0, y0, z0, box_size)
-    packmap, pack_angle_list = MM.merge_map(v, protein_name, x, y, z, box_size)
+    initmap, init_angle_list = MM.merge_map(v, protein_name, np.int64(x0), np.int64(y0), np.int64(z0), np.int64(box_size))
+    packmap, pack_angle_list = MM.merge_map(v, protein_name, np.int64(x),np.int64(y), np.int64(z), np.int64(box_size))
     packing_result['optimal_result']['initmap_rotate_angle'] = init_angle_list
     packing_result['optimal_result']['packmap_rotate_angle'] = pack_angle_list
     print('merge huge map done ')

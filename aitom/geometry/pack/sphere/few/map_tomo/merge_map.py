@@ -46,24 +46,24 @@ def angle_rotate(v, angle):
 
 
 def merge_map(v, protein_name, x, y, z, box_size):
-    def add_map(hugemap, map, center):
+    def add_map(hugemap, map1, center):
         assert (center.shape == (3,))
-        x0 = int(center[0]) - map.shape[0] / 2
-        y0 = int(center[1]) - map.shape[1] / 2
-        z0 = int(center[2]) - map.shape[2] / 2
-        for i in range(map.shape[0]):
+        x0 = int(int(center[0]) - map1.shape[0] / 2)
+        y0 = int(int(center[1]) - map1.shape[1] / 2)
+        z0 = int(int(center[2]) - map1.shape[2] / 2)
+        for i in range(map1.shape[0]):
             x = x0 + i
             if x < 0 or x >= hugemap.shape[0]:
                 continue
-            for j in range(map.shape[1]):
+            for j in range(map1.shape[1]):
                 y = y0 + j
                 if y < 0 or y >= hugemap.shape[1]:
                     continue
-                for k in range(map.shape[2]):
+                for k in range(map1.shape[2]):
                     z = z0 + k
                     if z < 0 or z >= hugemap.shape[2]:
                         continue
-                    hugemap[x][y][z] += map[i][j][k]
+                    hugemap[x][y][z] += map1[i][j][k]
         return hugemap
 
     hugemap = np.zeros((box_size, box_size, box_size), dtype='float32')
@@ -100,7 +100,7 @@ def trim_margin(hugemap):
 
 def trim_target(hugemap, target_center, target_size=32, loc_r=None):
     # volume size = 30*30*30
-    side = target_size
+    side = int(target_size)
     if loc_r is None:
         loc_proportion = 0.5
         loc_max = np.array([side, side, side], dtype=float) * loc_proportion
@@ -109,9 +109,9 @@ def trim_target(hugemap, target_center, target_size=32, loc_r=None):
     loc_r = loc_r.astype(np.int16)
     target_center = target_center.astype(np.int16)
     trim_center = target_center + (-loc_r)
-    x_begin = max(trim_center[0] - side / 2, 0)
-    y_begin = max(trim_center[1] - side / 2, 0)
-    z_begin = max(trim_center[2] - side / 2, 0)
+    x_begin = int(max(trim_center[0] - side / 2, 0))
+    y_begin = int(max(trim_center[1] - side / 2, 0))
+    z_begin = int(max(trim_center[2] - side / 2, 0))
     targetmap = hugemap[x_begin: x_begin + side, y_begin: y_begin + side, z_begin: z_begin + side]
     return targetmap, loc_r
 

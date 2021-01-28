@@ -20,6 +20,7 @@ def get_random_protein(boundary_shpere, protein_number=5, show_log=0):
     random_protein = {}
     for keys in boundary_shpere.keys():
         # random dic, the second parameter is the number
+        print(boundary_shpere.keys(),protein_number)
         random_key = random.sample(boundary_shpere.keys(), protein_number)
     for i in range(len(random_key)):
         random_protein[random_key[i]] = boundary_shpere[random_key[i]]

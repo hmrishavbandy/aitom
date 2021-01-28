@@ -1,11 +1,11 @@
-from . import simu_subtomo as SS
-from .packing_single_sphere import pdb2ball_single as P2B
-from .map_tomo import pdb2map as PM
-from .map_tomo import iomap as IM
-
-op = {'map': {'situs_pdb2vol_program': '/shared/opt/local/img/em/et/util/situs/Situs_2.7.2/bin/pdb2vol',
-              'spacing_s': [10.0], 'resolution_s': [10.0], 'pdb_dir': 'IOfile/pdbfile/',
-              'out_file': '/IOfile/map_single/situs_maps.pickle', 'map_single_path': './IOfile/map_single'},
+import simu_subtomo as SS
+from packing_single_sphere import pdb2ball_single as P2B
+from map_tomo import pdb2map as PM
+from map_tomo import iomap as IM
+from tqdm import tqdm
+op = {'map': {'situs_pdb2vol_program':'Situs_3.1/bin/pdb2vol',
+              'spacing_s': [30.0], 'resolution_s': [30.0], 'pdb_dir': './IOfile/pdbfile/',
+              'out_file': './IOfile/map_single/situs_maps.pickle', 'map_single_path': './IOfile/map_single'},
       # read density map from mrc
       'tomo': {'model': {'missing_wedge_angle': 30, 'SNR': 500000000},
                'ctf': {'pix_size': 1.0, 'Dz': -5.0, 'voltage': 300, 'Cs': 2.0, 'sigma': 0.4}},
@@ -13,11 +13,11 @@ op = {'map': {'situs_pdb2vol_program': '/shared/opt/local/img/em/et/util/situs/S
       'v': None}
 
 # convert pdb file into single ball and get the center and radius of this ball.
-boundary_shpere = P2B.pdb2ball_single(PDB_ori_path='IOfile/pdbfile/', show_log=0)
+boundary_shpere = P2B.pdb2ball_single(PDB_ori_path='IOfile/pdbfile/', show_log=1)
 
 packing_op = {
-    # 'target': '2byu',
-    'random_protein_number': 4,
+    'target': '2byu',
+    'random_protein_number': 1,
     'PDB_ori_path': 'IOfile/pdbfile/',
     'iteration': 5001,
     'step': 1,
@@ -26,8 +26,9 @@ packing_op = {
     'boundary_shpere': boundary_shpere}
 
 # convert pdb to map
+print(op['map'])
 ms = PM.pdb2map(op['map'])
-for n in ms:
+for n in tqdm(ms):
     v = ms[n]
     IM.map2mrc(v, op['map']['map_single_path'] + '/{}.mrc'.format(n))
 print('convert pdb to map')
@@ -37,10 +38,11 @@ rootdir = op['map']['map_single_path']
 v = IM.readMrcMapDir(rootdir)
 print('read density map done')
 op['v'] = v
-
+#print(v.keys())
 # generate subtomogram dataset
 num = 0
-for num in range(1000):
+from tqdm import tqdm
+for num in tqdm(range(1000)):
     # '1w6t' '2bo9' '2gho' '3d2f' '1eqr' '1vrg' '3k7a' '1jgq' '1vpx'
     # the above macromolecules may encounter some error
 
@@ -88,6 +90,9 @@ for num in range(1000):
                            'target': 'IOfile/json/target{}.json'.format(num)}}
 
         # do simulation
+        #print(packing_op)
+        print("Starting Simulation")
+        #print(op.keys())
         SS.simu_subtomo(op, packing_op, output, save_tomo=0, save_target=1, save_tomo_slice=0)
         print(num, packing_op['target'], 'Done')
         num = num + 1

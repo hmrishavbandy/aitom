@@ -1,10 +1,10 @@
-from . import simu_subtomo_single as SS
-from .packing_single_sphere import pdb2ball_single as P2B
-from .map_tomo import pdb2map as PM
-from .map_tomo import iomap as IM
+import simu_subtomo_single as SS
+from packing_single_sphere import pdb2ball_single as P2B
+from map_tomo import pdb2map as PM
+from map_tomo import iomap as IM
 import os
 
-op = {'map': {'situs_pdb2vol_program': '/shared/opt/local/img/em/et/util/situs/Situs_2.7.2/bin/pdb2vol',
+op = {'map': {'situs_pdb2vol_program': './Situs_3.1/bin/pdb2vol',
               'spacing_s': [10.0], 'resolution_s': [10.0], 'pdb_dir': 'IOfile/pdbfile/',
               'out_file': '/IOfile/map_single/situs_maps.pickle', 'map_single_path': './IOfile/map_single'},
       # read density map from mrc

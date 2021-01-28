@@ -27,7 +27,7 @@ def run_iterator(tasks, worker_num=multiprocessing.cpu_count(), verbose=False):
         if 'id' not in t:
             t['id'] = i
         assert t['id'] == i
-
+    #print("count")
     completed_count = 0
     if worker_num > 1:
         pool = Pool(processes=worker_num)
@@ -37,24 +37,26 @@ def run_iterator(tasks, worker_num=multiprocessing.cpu_count(), verbose=False):
             aa = pool.apply_async(func=call_func, kwds={'t': t})
 
             pool_apply.append(aa)
-
+        #print("count")
         for pa in pool_apply:
-            yield pa.get(99999)
+            
+            yield pa.get(9)
             completed_count += 1
 
             if verbose:
                 print('\r', completed_count, '/', len(tasks), end=' ')
                 sys.stdout.flush()
-
+        #print("count")
         pool.close()
         pool.join()
         del pool
+        print("count")
 
     else:
         for i, t in tasks.items():
             yield call_func(t)
             completed_count += 1
-
+            print("yeild over")
             if verbose:
                 print('\r', completed_count, '/', len(tasks), end=' ')
                 sys.stdout.flush()
@@ -75,7 +77,7 @@ def call_func(t):
     else:
         modu = importlib.import_module(t['module'])
         func = getattr(modu, t['method'])
-
+    #print("here")
     r = func(*t['args'], **t['kwargs'])
     return {'id': t['id'], 'result': r}
 

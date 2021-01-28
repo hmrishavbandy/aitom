@@ -46,10 +46,11 @@ def batch_processing(op):
                 ts[uuid.uuid4()] = {'func': SP.convert, 'kwargs': {'op': op_t}}
 
     import aitom.parallel.multiprocessing.util as TPMU
-    cre_s = TPMU.run_batch(ts)
+    cre_s = TPMU.run_batch(ts,worker_num=0,verbose=True)
 
     re = {}
     for cre in cre_s:
+        #print(cre)
         pdb_id = cre['result']['pdb_id']
         resolution = cre['result']['resolution']
         spacing = cre['result']['spacing']
@@ -115,3 +116,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
